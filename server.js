@@ -12,23 +12,23 @@ async function main() {
 
     app.use(bodyParser.json());
 
-    app.get('/listBooks', async (req, res) => {
+    app.get('/listBooks', async(req, res) => {
         let books = await loadBooks()
         res.json(books);
     })
 
-    app.patch('/updateBook', async (req, res) => {
+    app.patch('/updateBook', async(req, res) => {
         let books = await loadBooks()
         if (!req.body.id) return res.status(400).json({ error: true, message: `'id' is required in the request body when calling 'updateBook'. Make sure you're stringifying the body of your request, and sending the appropriate headers.` })
         let book = books.find(book => book.id === req.body.id);
         if (!book) return res.status(404).json({ error: true, message: `Could not find a book with an id of ${req.body.id}` })
-        const { title, year, quantity, imageURL, description } = { ...book, ...req.body };
+        const { title, year, quantity, imageURL, description } = {...book, ...req.body };
         Object.assign(book, { title, year, quantity, imageURL, description });
         await saveBooks(books)
         res.json(book)
     })
 
-    app.post('/addBook', async (req, res) => {
+    app.post('/addBook', async(req, res) => {
         let books = await loadBooks()
         if (!req.body.title) return res.status(400).json({ error: true, message: `'title' is required in the request body when calling 'addBook'. Make sure you're stringifying the body of your request, and sending the appropriate headers.` })
         if (!req.body.quantity) return res.status(400).json({ error: true, message: `'quantity' is required in the request body when calling 'addBook'. Make sure you're stringifying the body of your request, and sending the appropriate headers.` })
@@ -42,7 +42,7 @@ async function main() {
         res.json(book)
     })
 
-    app.delete('/removeBook/:id', async (req, res) => {
+    app.delete('/removeBook/:id', async(req, res) => {
         let books = await loadBooks()
         if (!req.params.id) return res.status(400).json({ error: true, message: `'id' is required in the request body when calling 'updateBook'. Make sure you're stringifying the body of your request, and sending the appropriate headers.` })
         let bookToDelete = books.find(book => book.id === parseInt(req.params.id));
